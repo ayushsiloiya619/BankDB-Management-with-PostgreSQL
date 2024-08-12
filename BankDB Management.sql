@@ -29,10 +29,8 @@ begin
 	 commit;
 end;
 $$;
-
+---call the procedure---
 call insert_account(4,'Kushagra Singh',20000);
-call insert_account(5,'Kartik Awasthi',5000);
-call insert_account(6,'Nikhil',12000);
 -----------------------------------------------------------------------
 
 -----procedure to search account holder through id----
@@ -60,10 +58,8 @@ BEGIN
     RAISE NOTICE 'Fetched Successfully';
 END;
 $$;
-
 -- Call the procedure
 CALL search_id(2);
-call search_id(6);
 ------------------------------------------------------------------
 
 -----procedure to search account holder through id----
@@ -92,13 +88,9 @@ BEGIN
     RAISE NOTICE 'Fetched Successfully';
 END;
 $$;
-
 -- Call the procedure
 CALL search_id_bal(2);
 -----------------------------------------------------------------
-
-------Employee with sorted id------
-SELECT * FROM accounts ORDER BY id;
 
 -----Transfer Balance-----
 create or replace procedure transfer(
@@ -121,7 +113,7 @@ begin
 
     commit;
 end;$$;
-
+---call the procedure---
 call transfer(1,2,1000);
 -----------------------------------------------------------------
 
@@ -144,17 +136,52 @@ BEGIN
     RAISE NOTICE 'Employee: %, Balance: %', emp_name, emp_balance;
 END;
 $$;
-
 ---call the procedure---
 CALL balance_slip(1);
 -----------------------------------------------------------------
+
+----Procedure to add balance-----
+CREATE OR REPLACE PROCEDURE add_balance(
+    emp_id INT,
+    amount INT
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    current_time TIMESTAMP;
+BEGIN
+    -- Get the current date and time
+    current_time := NOW();
+
+    -- Update the account balance
+    UPDATE accounts 
+    SET balance = balance + amount, 
+        last_transaction = current_time + date
+    WHERE id = emp_id;
+
+    -- Display the details
+    RAISE NOTICE 'Account Holder ID: %, Updated Balance: %, Transaction Date: %', emp_id, amount, current_time;
+    RAISE NOTICE 'Updated Details Successfully';
+END;
+$$;
+CALL add_balance(6, 2000);
+-----------------------------------------------------------------
+
+
+
+
+---------------Adding the last_transaction column---
+ALTER TABLE accounts ADD COLUMN last_transaction TIME;
+
+------Employee with sorted id------
+SELECT * FROM accounts ORDER BY id;
+
+
 
 
 
 -----Procedure Last Transaction upto 4-----
 -----4 transaction show------
-----Date -> Show-----
-----balance add------
 ----Cash withdraw-----
 
 
