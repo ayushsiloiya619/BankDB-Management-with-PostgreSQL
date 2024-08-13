@@ -201,21 +201,35 @@ $$;
 
 CALL cash_withdraw(2, 2000);
 --------------------------------------------------------------------
+---------Count the total account holder in bank-----
+CREATE OR REPLACE PROCEDURE count_holder()
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    total_account_holders INT;
+BEGIN
+    -- Count the distinct account holders and store the result in a variable
+    SELECT COUNT(DISTINCT name) INTO total_account_holders FROM accounts;
 
+    -- Display the result
+    RAISE NOTICE 'Total Account Holders: %', total_account_holders;
+END;
+$$;
 
+call count_holder();
 ---------------Adding the last_transaction column---
 ALTER TABLE accounts ADD COLUMN last_transaction TIME;
 
 ------Employee with sorted id------
 SELECT * FROM accounts ORDER BY id;
 
-ALTER TABLE accounts
-DROP COLUMN last_transaction;
+SELECT FROM DATE;
 
 
 
------Last Transaction upto 4-----
-----Cash withdraw-----
+---To be release soon.
+---1. Last transaction upto 4
+
 
 
 
