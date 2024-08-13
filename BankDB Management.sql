@@ -166,8 +166,41 @@ END;
 $$;
 CALL add_balance(6, 2000);
 -----------------------------------------------------------------
+----Procedure to withdraw a cash from bank---
 
+CREATE OR REPLACE PROCEDURE cash_withdraw(
+    emp_id INT,
+    withdraw_amount DECIMAL
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    emp_name TEXT;
+    current_balance DECIMAL(15,2);
+BEGIN
+    -- Retrieve the name and balance for the given employee ID
+    SELECT name, balance INTO emp_name, current_balance
+    FROM accounts
+    WHERE id = emp_id;
 
+    -- Check if the balance is sufficient for withdrawal
+    IF current_balance >= withdraw_amount THEN
+        -- Update the account balance
+        UPDATE accounts 
+        SET balance = balance - withdraw_amount
+        WHERE id = emp_id;
+
+        -- Display the details
+        RAISE NOTICE 'Cash withdrawn by ID: %, Name: %, Withdrawn Amount: %', emp_id, emp_name, withdraw_amount;
+        RAISE NOTICE 'Withdrawal successful. Remaining Balance: %', current_balance - withdraw_amount;
+    ELSE
+        RAISE NOTICE 'Insufficient balance. Current Balance: %', current_balance;
+    END IF;
+END;
+$$;
+
+CALL cash_withdraw(2, 2000);
+--------------------------------------------------------------------
 
 
 ---------------Adding the last_transaction column---
@@ -176,12 +209,12 @@ ALTER TABLE accounts ADD COLUMN last_transaction TIME;
 ------Employee with sorted id------
 SELECT * FROM accounts ORDER BY id;
 
+ALTER TABLE accounts
+DROP COLUMN last_transaction;
 
 
 
-
------Procedure Last Transaction upto 4-----
------4 transaction show------
+-----Last Transaction upto 4-----
 ----Cash withdraw-----
 
 
