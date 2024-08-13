@@ -217,8 +217,7 @@ END;
 $$;
 
 call count_holder();
----------------Adding the last_transaction column---
-ALTER TABLE accounts ADD COLUMN last_transaction TIME;
+--------------------------------------------------
 
 ------Employee with sorted id------
 SELECT * FROM accounts ORDER BY id;
